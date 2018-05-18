@@ -116,7 +116,7 @@
 <meta property="og:site_name" content="Teemo&#39;s blog">
 <meta property="og:description" content="关于学习ES6语法中的块级作用域、let、const、模板字符串、标签模板的笔记。 块级作用域以前只有函数作用域和全局作用域块级作用域只在一段代码之间有效 {}（）括号内 如if function for switch等等123456789101112131415var num = 100;function fn()&amp;#123;	console.log(num); //undefined	if(f">
 <meta property="og:locale" content="zh-HK">
-<meta property="og:updated_time" content="2018-05-18T13:38:00.990Z">
+<meta property="og:updated_time" content="2018-05-18T13:41:32.151Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="ES6学习笔记（一）">
 <meta name="twitter:description" content="关于学习ES6语法中的块级作用域、let、const、模板字符串、标签模板的笔记。 块级作用域以前只有函数作用域和全局作用域块级作用域只在一段代码之间有效 {}（）括号内 如if function for switch等等123456789101112131415var num = 100;function fn()&amp;#123;	console.log(num); //undefined	if(f">
@@ -352,7 +352,7 @@
                 
               
 
-              <time title="創建時間：2018-05-18 14:53:06 / 修改時間：21:38:00" itemprop="dateCreated datePublished" datetime="2018-05-18T14:53:06+08:00">2018-05-18</time>
+              <time title="創建時間：2018-05-18 14:53:06 / 修改時間：21:41:32" itemprop="dateCreated datePublished" datetime="2018-05-18T14:53:06+08:00">2018-05-18</time>
             
 
             
@@ -430,11 +430,15 @@
 <li>let [x = 10]=[null] 如果不是Undefined 就模式匹配 赋值为null</li>
 <li>let [x=1,y=x]=[2] x=2 y=2 先模式匹配再默认值</li>
 <li>let [x=y,y=1]=[] 后let y 但是在上面先x=y使用了y 所以会报错</li>
-<li>let [x=y,y=1]=[2] 不会报错<h2 id="对象"><a href="#对象" class="headerlink" title="对象"></a>对象</h2></li>
+<li>let [x=y,y=1]=[2] 不会报错</li>
+</ul>
+<h2 id="对象"><a href="#对象" class="headerlink" title="对象"></a>对象</h2><ul>
 <li>let{a,b} = {b:1,a:1} 无序</li>
 <li>let{a:b} = {a:1} 输出a:undefined b:1</li>
 <li>let{a,b}实质是let{a:a,b:b} 前面一个a是模式 </li>
-<li>let{toString:s} = false s==Boolean.prototype.toString<h2 id="用于swap交换"><a href="#用于swap交换" class="headerlink" title="用于swap交换"></a>用于swap交换</h2></li>
+<li>let{toString:s} = false s==Boolean.prototype.toString</li>
+</ul>
+<h2 id="用于swap交换"><a href="#用于swap交换" class="headerlink" title="用于swap交换"></a>用于swap交换</h2><ul>
 <li>一般会临时变量交换</li>
 <li>let a = 1,b = 2 [a,b] = [b,a]</li>
 <li>用于函数返回值的结构  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">method</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">	<span class="keyword">return</span>&#123;</span><br><span class="line">		a:<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;&#125;</span><br><span class="line">		b:<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">let</span>&#123;a,b&#125; = method();</span><br></pre></td></tr></table></figure>
