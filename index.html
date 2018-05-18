@@ -325,7 +325,7 @@
           <h1 class="post-title" itemprop="name headline">
                 
                 <a class="post-title-link" href="/blog/2018/05/18/hello-md/" itemprop="url">
-                  hello.md
+                  ES6学习笔记（一）
                 </a>
               
             
@@ -351,7 +351,7 @@
                 
               
 
-              <time title="創建時間：2018-05-18 14:53:06 / 修改時間：14:53:40" itemprop="dateCreated datePublished" datetime="2018-05-18T14:53:06+08:00">2018-05-18</time>
+              <time title="創建時間：2018-05-18 14:53:06 / 修改時間：21:21:29" itemprop="dateCreated datePublished" datetime="2018-05-18T14:53:06+08:00">2018-05-18</time>
             
 
             
@@ -373,7 +373,7 @@
                 <span class="post-meta-item-text">分類於</span>
               
               
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/blog/categories/hexo/" itemprop="url" rel="index"><span itemprop="name">hexo</span></a></span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/blog/categories/学习笔记/" itemprop="url" rel="index"><span itemprop="name">学习笔记</span></a></span>
 
                 
                 
@@ -409,7 +409,85 @@
       
         
           
-            
+            <h1 id="块级作用域"><a href="#块级作用域" class="headerlink" title="块级作用域"></a>块级作用域</h1><p>以前只有函数作用域和全局作用域<br>块级作用域只在一段代码之间有效 {}（）括号内 如if function for switch等等<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> num = <span class="number">100</span>;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">fn</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">	<span class="built_in">console</span>.log(num); <span class="comment">//undefined</span></span><br><span class="line">	<span class="keyword">if</span>(<span class="literal">false</span>)&#123;</span><br><span class="line">		<span class="keyword">var</span> num = <span class="number">10</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//函数作用域内var 变量提升 相当于</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">fn</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">	<span class="keyword">var</span> num;</span><br><span class="line">	<span class="built_in">console</span>.log(num); <span class="comment">//undefined</span></span><br><span class="line">	<span class="keyword">if</span>(<span class="literal">false</span>)&#123;</span><br><span class="line"> 		num = <span class="number">10</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>原本想用父级变量，但因为{}内声明了变量，变量提升，所以需要块级作用域<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(<span class="literal">false</span>)&#123;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">fn</span>(<span class="params"></span>)</span>&#123;&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//不同浏览器不同，虽然规定if中不允许函数声明，但浏览器没有遵循，所以有的会执行有的不会。</span></span><br><span class="line">一般会用<span class="keyword">var</span> fn = <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;&#125;函数表达式代替</span><br></pre></td></tr></table></figure></p>
+<h2 id="let"><a href="#let" class="headerlink" title="let"></a>let</h2><ul>
+<li>不存在变量提升  必须声明后再使用</li>
+<li>可识别块级作用域 只在当前块级作用域内有效 （暂时性死区）</li>
+<li>不能重复声明（var 声明会覆盖前面 有可能会出错 所以建议先声明 后面用的时候再赋值）</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">a = <span class="number">2</span>;</span><br><span class="line"><span class="keyword">var</span> a = <span class="number">10</span>;</span><br><span class="line"><span class="comment">//a = 10</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">a = <span class="number">2</span>;</span><br><span class="line"><span class="keyword">let</span> a = <span class="number">10</span>;</span><br><span class="line"><span class="comment">//报错</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> i = <span class="number">10</span>;</span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">let</span> i = <span class="number">0</span>;i&lt;<span class="number">10</span>;i++)&#123;</span><br><span class="line"><span class="keyword">let</span> i = <span class="number">100</span>;</span><br><span class="line"><span class="built_in">console</span>.log(i);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//不报错 输出10个100</span></span><br><span class="line"><span class="comment">//三块作用域</span></span><br></pre></td></tr></table></figure>
+<h2 id="const"><a href="#const" class="headerlink" title="const"></a>const</h2><ul>
+<li>常量 不能改变</li>
+<li>具有let变量的性质 不提升 暂时性死区 不能重复声明</li>
+<li>const obj = {} obj.a = 1; delete obj.a 对象可以改变</li>
+<li>const A = 123,A拿到的是123占用的内存地址 <strong>原始值一旦改变需要重新分配内存 引用值改变地址不变</strong></li>
+</ul>
+<h2 id="变量的结构赋值-模式匹配"><a href="#变量的结构赋值-模式匹配" class="headerlink" title="变量的结构赋值 模式匹配"></a>变量的结构赋值 模式匹配</h2><ul>
+<li>数组<ul>
+<li>let [x = 10]=[undefined] 如果绝对等于undefined 就是默认值10</li>
+<li>let [x = 10]=[null] 如果不是Undefined 就模式匹配 赋值为null</li>
+<li>let [x=1,y=x]=[2] x=2 y=2 先模式匹配再默认值</li>
+<li>let [x=y,y=1]=[] 后let y 但是在上面先x=y使用了y 所以会报错</li>
+<li>let [x=y,y=1]=[2] 不会报错</li>
+</ul>
+</li>
+<li>对象<ul>
+<li>let{a,b} = {b:1,a:1} 无序</li>
+<li>let{a:b} = {a:1} 输出a:undefined b:1</li>
+<li>let{a,b}实质是let{a:a,b:b} 前面一个a是模式 </li>
+<li>let{toString:s} = false s==Boolean.prototype.toString</li>
+</ul>
+</li>
+<li>用于swap交换<ul>
+<li>一般会临时变量交换</li>
+<li>let a = 1,b = 2 [a,b] = [b,a]</li>
+<li>用于函数返回值的结构   <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">method</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">	<span class="keyword">return</span>&#123;</span><br><span class="line">		a:<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;&#125;</span><br><span class="line">		b:<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">let</span>&#123;a,b&#125; = method();</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="模板字符串"><a href="#模板字符串" class="headerlink" title="模板字符串"></a>模板字符串</h2><p>增强的字符串 用<code></code>包裹</p>
+<ul>
+<li>普通字符串换行\n  代码中\换行 实际输出会有很多空格<br>模板字符串可以保留代码中的格式 语义化更好 </li>
+<li><p>${}模板字符串中添加变量</p>
+   <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> xm = &#123;</span><br><span class="line">	age:<span class="number">18</span>,</span><br><span class="line">	name:<span class="string">'xm'</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> &#123;age,name&#125; = xm</span><br><span class="line"><span class="keyword">var</span> str = <span class="string">'name:'</span>+name+<span class="string">'age:'</span>+age</span><br><span class="line"><span class="keyword">var</span> newStr = <span class="string">`name:<span class="subst">$&#123;name&#125;</span> age:<span class="subst">$&#123;age&#125;</span>`</span></span><br></pre></td></tr></table></figure>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">var arr = [1,2,3,4,5]</span><br><span class="line">var resStr = `$&#123;arr.map(function(item,index)&#123;</span><br><span class="line">	return `$&#123;item&#125;:$&#123;index&#125;`</span><br><span class="line">&#125;)&#125;`</span><br><span class="line">	//模板字符串的嵌套</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="标签模板"><a href="#标签模板" class="headerlink" title="标签模板"></a>标签模板</h2><ul>
+<li><p>函数调用的特殊形式 show <code>a</code> 相当于执行函数 show(a);</p>
+  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> name = <span class="string">'xm'</span>;</span><br><span class="line"><span class="keyword">var</span> where = <span class="string">'bj'</span>;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">show</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line"> 		<span class="built_in">console</span>.log(<span class="built_in">arguments</span>)</span><br><span class="line">&#125;</span><br><span class="line">show <span class="string">`hello <span class="subst">$&#123;name&#125;</span>,welcome to <span class="subst">$&#123;where&#125;</span>`</span></span><br><span class="line"><span class="comment">//控制台打印 Arguments(3) [Array(3), "xm", "bj", callee: ƒ, Symbol(Symbol.iterator): ƒ]</span></span><br><span class="line"><span class="comment">//0:(3) ["hello ", ",welcome to ", "", raw: Array(3)]</span></span><br><span class="line"><span class="comment">//1:"xm"</span></span><br><span class="line"><span class="comment">//2:"bj"</span></span><br><span class="line"><span class="comment">//callee:ƒ show() 函数的引用 函数本身</span></span><br><span class="line"><span class="comment">//length:3</span></span><br><span class="line"><span class="comment">//Symbol(Symbol.iterator):ƒ values()</span></span><br><span class="line"><span class="comment">//__proto__:Object</span></span><br><span class="line"><span class="comment">//用``调用show函数 参数为一个字符串，控制台输出数组，第一位为字符串最后还有一个空串，后面两位为$&#123;&#125;添加的两个变量</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>过滤html字符串 <strong>视频没看懂 具体如何防注入？？</strong></p>
+<ul>
+<li>xss攻击 防注入 如在输入中输入了一些恶意脚本代码 </li>
+<li>把字符串当作函数参数接收 通过正则匹配将脚本代码替换成别的让它无法执行</li>
+</ul>
+</li>
+</ul>
+<h2 id="函数参数的默认值"><a href="#函数参数的默认值" class="headerlink" title="函数参数的默认值"></a>函数参数的默认值</h2><ul>
+<li><p>ES6之前传入参数布尔值为False</p>
+  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">person</span>(<span class="params">age</span>)</span>&#123;</span><br><span class="line">	<span class="keyword">var</span> age = age || <span class="number">18</span>;</span><br><span class="line">	<span class="built_in">console</span>.log(age)</span><br><span class="line">&#125;</span><br><span class="line">person(<span class="number">0</span>)</span><br><span class="line">person(<span class="literal">null</span>)</span><br><span class="line">person(<span class="literal">false</span>)</span><br><span class="line"><span class="comment">//age都是18 布尔值判断</span></span><br><span class="line"><span class="comment">//修改为</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">person</span>(<span class="params">age</span>)</span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(<span class="keyword">typeof</span>(age)==<span class="string">'undefined'</span>)&#123;</span><br><span class="line">		<span class="keyword">var</span> age = age || <span class="number">18</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>es6中 可以直接写默认值 </p>
+  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">person</span>(<span class="params">age=<span class="number">18</span></span>)</span>&#123;</span><br><span class="line">	<span class="built_in">console</span>.log(age)</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//传入什么就是什么 未传入或者undefined就是18</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>与结构赋值结合使用 参数用结构赋值形式表示 如参数是对象 function fn({x,y=5}){} fn({x:1})</p>
+  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">f1</span>(<span class="params">&#123;x=<span class="number">0</span>,y=<span class="number">0</span>&#125;=&#123;x,y&#125;</span>)</span>&#123; <span class="comment">//默认值</span></span><br><span class="line"> 		<span class="built_in">console</span>.log(x,y)</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">f2</span>(<span class="params">&#123;x,y&#125;=&#123;x:<span class="number">0</span>,y:<span class="number">0</span>&#125;</span>)</span>&#123; <span class="comment">//赋值 相当于&#123;x,y&#125;=&#123;x:1&#125;所以Y是undefined</span></span><br><span class="line"> 		<span class="built_in">console</span>.log(x,y)</span><br><span class="line">&#125;</span><br><span class="line">f1(&#123;<span class="attr">x</span>:<span class="number">1</span>&#125;) <span class="comment">//1 0</span></span><br><span class="line">f2(&#123;<span class="attr">x</span>:<span class="number">1</span>&#125;) <span class="comment">//1 undefined</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>参数作用域及注意事项</p>
+  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">fn</span>(<span class="params">x=<span class="number">5</span></span>)</span>&#123;</span><br><span class="line">	<span class="keyword">let</span> x = <span class="number">10</span>;</span><br><span class="line">&#125; </span><br><span class="line"><span class="comment">//会报错</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>传入两个相同的参数 相当于var了两遍 会取后面的一个 </li>
+<li>传入两个相同的 再用一个默认值会报错 因为默认值就用的是Let let不能声明两遍</li>
+</ul>
+</li>
+</ul>
+<h2 id="扩展运算符"><a href="#扩展运算符" class="headerlink" title="扩展运算符"></a>扩展运算符</h2><p>…arr 相当于把数组两边中括号去掉</p>
+
           
         
       
@@ -524,7 +602,11 @@
                     
                       
                     
-                    <span class="site-state-item-count">1</span>
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">2</span>
                     <span class="site-state-item-name">標籤</span>
                   </a>
                 </div>
