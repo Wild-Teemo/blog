@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-HK">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/blog/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/blog/css/main.css?v=6.3.0" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png?v=6.3.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png?v=6.3.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png?v=6.3.0">
+
+
+  <link rel="mask-icon" href="/blog/images/logo.svg?v=6.3.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/blog/',
+    scheme: 'Mist',
+    version: '6.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="关于学习JS设计模式定义、设计原则和单例模式的笔记。 设计模式代码设计经验的总结为了使代码的可重用性、可读性认同性、可靠性更高，工程化。面向对象：创建哪些对象 对象间关系 对象要去做的事情 模式类型 创建型模式 研究高效的创建对象单例模式 抽象工厂模式 建造者模式 工厂模式 原型模式 结构型模式 设计对象的结构和关系适配器模式 桥接模式 装饰模式 组合模式 外观模式 享元模式 代理模式 行为型模式">
+<meta name="keywords" content="设计模式,笔记">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JS设计模式（一）单例模式">
+<meta property="og:url" content="http://yoursite.com/blog/2018/05/18/02/index.html">
+<meta property="og:site_name" content="Teemo&#39;s blog">
+<meta property="og:description" content="关于学习JS设计模式定义、设计原则和单例模式的笔记。 设计模式代码设计经验的总结为了使代码的可重用性、可读性认同性、可靠性更高，工程化。面向对象：创建哪些对象 对象间关系 对象要去做的事情 模式类型 创建型模式 研究高效的创建对象单例模式 抽象工厂模式 建造者模式 工厂模式 原型模式 结构型模式 设计对象的结构和关系适配器模式 桥接模式 装饰模式 组合模式 外观模式 享元模式 代理模式 行为型模式">
+<meta property="og:locale" content="zh-HK">
+<meta property="og:updated_time" content="2018-06-09T14:26:03.866Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="JS设计模式（一）单例模式">
+<meta name="twitter:description" content="关于学习JS设计模式定义、设计原则和单例模式的笔记。 设计模式代码设计经验的总结为了使代码的可重用性、可读性认同性、可靠性更高，工程化。面向对象：创建哪些对象 对象间关系 对象要去做的事情 模式类型 创建型模式 研究高效的创建对象单例模式 抽象工厂模式 建造者模式 工厂模式 原型模式 结构型模式 设计对象的结构和关系适配器模式 桥接模式 装饰模式 组合模式 外观模式 享元模式 代理模式 行为型模式">
+
+
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/blog/2018/05/18/02/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>JS设计模式（一）单例模式 | Teemo's blog</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-HK">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+    <a href="https://github.com/Wild-Teemo/blog"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"></a>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/blog/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Teemo's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">Teemo's blog</p>
+      
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切換導航欄">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/blog/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首頁</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+    <a href="/blog/about/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-user"></i> <br />關於</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+    <a href="/blog/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />標籤</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+    <a href="/blog/categories/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-th"></i> <br />分類</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/blog/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />歸檔</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/blog/blog/2018/05/18/02/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Wild Teemo">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/blog/images/0.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Teemo's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">JS设计模式（一）单例模式
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">發表於</span>
+              
+
+              
+                
+              
+
+              <time title="創建時間：2018-05-18 14:53:06" itemprop="dateCreated datePublished" datetime="2018-05-18T14:53:06+08:00">2018-05-18</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新於</span>
+                
+                <time title="修改時間：2018-06-09 22:26:03" itemprop="dateModified" datetime="2018-06-09T22:26:03+08:00">2018-06-09</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分類於</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/blog/categories/学习笔记/" itemprop="url" rel="index"><span itemprop="name">学习笔记</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>关于学习JS设计模式定义、设计原则和单例模式的笔记。</p>
+<h1 id="设计模式"><a href="#设计模式" class="headerlink" title="设计模式"></a>设计模式</h1><p>代码设计经验的总结<br>为了使代码的可重用性、可读性认同性、可靠性更高，工程化。<br>面向对象：创建哪些对象 对象间关系 对象要去做的事情</p>
+<h2 id="模式类型"><a href="#模式类型" class="headerlink" title="模式类型"></a>模式类型</h2><ul>
+<li>创建型模式 研究高效的创建对象<br>单例模式 抽象工厂模式 建造者模式 工厂模式 原型模式</li>
+<li>结构型模式 设计对象的结构和关系<br>适配器模式 桥接模式 装饰模式 组合模式 外观模式 享元模式 代理模式</li>
+<li>行为型模式 设计对象的行为<br>模板方法 命令 迭代器 观察者 中介者 备忘录 解释器 状态 策略 职责链 访问者</li>
+</ul>
+<h2 id="设计模式原则"><a href="#设计模式原则" class="headerlink" title="设计模式原则"></a>设计模式原则</h2><p>减少耦合 增加复用性 降低代码开发维护拓展成本</p>
+<ul>
+<li>单一职责原则<br>一个方法只做一件事情 例如请求数据的函数 就不要用来渲染数据</li>
+<li>里氏代换原则<br>任何父类可以出现的地方 子类一定可以出现<br>一个父类可以访问的接口 父类忙着别的 子类可以去访问 向后兼容<br>父类定义为抽象类 只定义方法 不实现 当作一个接口 继承该父类的子类去具体实现</li>
+<li>依赖倒置原则 DIP<br>最常用的原则 依赖接口 不依赖方法 不用了解底层 只需知道表现 降低耦合度<br>JS中没有接口的概念<br>抽象类</li>
+<li>接口分离原则 ISP<br>大接口拆分成小接口 不能一个接口实现全部功能 同时也降低了耦合</li>
+<li>最小知道原则 LD （迪米特法则）<br>一个接口和一个方法 传入的参数越少越好 降低复杂度耦合度</li>
+<li>开闭原则 OCP<br>面向拓展开放 面向修改关闭 增强代码复用性 可拓展功能<br>如jquery extend可以向实例上增加方法<h2 id="单例模式"><a href="#单例模式" class="headerlink" title="单例模式"></a>单例模式</h2>保证一个类只有一个实例 并提供一个访问它的全局访问点<br>利用构造函数每次只创建唯一的一个 节省资源<br>如 弹窗 贪吃蛇的食物 每次只出现一个 不用每次重新创建一个新的<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Test</span>(<span class="params">name</span>)</span>&#123;</span><br><span class="line"><span class="comment">//var this = Object.create(Test.prototype)</span></span><br><span class="line"><span class="comment">//return this</span></span><br><span class="line"><span class="comment">//new的时候发生的事</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> b = <span class="keyword">new</span> Test()</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>创建思路：把第一次创建时的保存起来。判断是否是第一次创建实例 如果不是 将保存的返回出来</p>
+<p>第一种实现方式 利用Test将this变为全局变量<br>但不符合开闭原则 因为可以随便修改Test.instance 实例ab就不相等<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Test</span>(<span class="params">name</span>)</span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(<span class="keyword">typeof</span>(Test.instance) === <span class="string">'object'</span>) <span class="comment">//instance不是undefined 表示不是第一次new</span></span><br><span class="line">	&#123;</span><br><span class="line">  		<span class="keyword">return</span> Test.instance;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span>&#123;</span><br><span class="line">		<span class="keyword">this</span>.name = name;</span><br><span class="line">		Test.instance = <span class="keyword">this</span>;<span class="comment">//第一次new的时候的this被保存在了Test的instance属性下面</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> a = <span class="keyword">new</span> Test(<span class="string">'a'</span>)</span><br><span class="line"><span class="keyword">var</span> b = <span class="keyword">new</span> Test()</span><br><span class="line"><span class="built_in">console</span>.log(a === b) <span class="comment">//true</span></span><br></pre></td></tr></table></figure></p>
+<p>第二种实现方式 每次new Test都调用function return instance 返回第一次的AO instance= this<br>但添加Test.prototype.lastName，实例都访问不到，因为所添加的属性是添加到了Test = function()上，但是实例的构造函数是function Test，所以访问不到添加的属性。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Test</span>(<span class="params">name</span>)</span>&#123;</span><br><span class="line">	<span class="keyword">var</span> instance = <span class="keyword">this</span></span><br><span class="line">  	<span class="keyword">this</span>.name  = name</span><br><span class="line">  	Test = <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    	<span class="keyword">return</span> instance;</span><br><span class="line">  	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> a = <span class="keyword">new</span> Test(<span class="string">'a'</span>)</span><br><span class="line"><span class="keyword">var</span> b = <span class="keyword">new</span> Test()</span><br><span class="line"><span class="built_in">console</span>.log(a===b)</span><br></pre></td></tr></table></figure></p>
+<p>第三种 立即执行函数 不存在挂载到全局和添加的不在构造函数上的问题<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> Test = (<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">  	<span class="keyword">var</span> instance;</span><br><span class="line">  	<span class="keyword">return</span> <span class="function"><span class="keyword">function</span>(<span class="params">name</span>)</span>&#123;</span><br><span class="line">    	<span class="keyword">if</span>(<span class="keyword">typeof</span>(instance) === <span class="string">'object'</span>)&#123;</span><br><span class="line">     		 <span class="keyword">return</span> instance;</span><br><span class="line">    	&#125;</span><br><span class="line">    <span class="keyword">else</span>&#123;</span><br><span class="line">    	<span class="keyword">this</span>.name = name;</span><br><span class="line">    	instance = <span class="keyword">this</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)()</span><br><span class="line">Test.prototype.a = <span class="string">'aaa'</span></span><br><span class="line"><span class="keyword">var</span> a = <span class="keyword">new</span> Test(<span class="string">'a'</span>)</span><br><span class="line"><span class="keyword">var</span> b = <span class="keyword">new</span> Test()</span><br><span class="line"><span class="built_in">console</span>.log(a == b)</span><br></pre></td></tr></table></figure></p>
+<p>单例模式的实际应用<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//创建弹窗 点击一次出现一个</span></span><br><span class="line"><span class="keyword">var</span> createAlert = <span class="function"><span class="keyword">function</span>(<span class="params">test</span>)</span>&#123;</span><br><span class="line">  <span class="keyword">var</span> oDiv = <span class="built_in">document</span>.createElement(<span class="string">'div'</span>)</span><br><span class="line">  oDiv.style.display = <span class="string">'none'</span></span><br><span class="line">  oDiv.innerText  = test</span><br><span class="line">  <span class="built_in">document</span>.body.appendChild(oDiv)</span><br><span class="line">  <span class="keyword">return</span> oDiv</span><br><span class="line">&#125;</span><br><span class="line">oBtn.onclick = <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">  <span class="keyword">var</span> oDiv = createAlert(<span class="string">'hello'</span>)</span><br><span class="line">  oDiv.style.display = <span class="string">'block'</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//单例模式创建弹窗 无论点击多少次只出现一个弹窗</span></span><br><span class="line"><span class="keyword">var</span> singleAlert = (<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">  <span class="keyword">var</span> oDiv = <span class="literal">null</span>;</span><br><span class="line">  <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params">text</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(oDiv!== <span class="literal">null</span>)&#123;</span><br><span class="line">      <span class="keyword">return</span> oDiv;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span>&#123;</span><br><span class="line">    oDiv = <span class="built_in">document</span>.createElement(<span class="string">'div'</span>)</span><br><span class="line">    oDiv.style.display = <span class="string">'none'</span></span><br><span class="line">    oDiv.innerText  = text</span><br><span class="line">    <span class="built_in">document</span>.body.appendChild(oDiv)</span><br><span class="line">    <span class="keyword">return</span> oDiv;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)()</span><br><span class="line">  oBtn.onclick = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> oDiv =singleAlert(<span class="string">'hello'</span>)</span><br><span class="line">  oDiv.style.display = <span class="string">'block'</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>将普通函数转换成单例<br>让单例模式可以复用 运用到多个对象上：让普通函数变成单例 传入一个函数 返回一个新的函数<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> createAlert = <span class="function"><span class="keyword">function</span>(<span class="params">test</span>)</span>&#123;</span><br><span class="line">  <span class="keyword">var</span> oDiv = <span class="built_in">document</span>.createElement(<span class="string">'div'</span>)</span><br><span class="line">  oDiv.style.display = <span class="string">'none'</span></span><br><span class="line">  oDiv.innerText  = test</span><br><span class="line">  <span class="built_in">document</span>.body.appendChild(oDiv)</span><br><span class="line">  <span class="keyword">return</span> oDiv</span><br><span class="line">&#125;<span class="comment">//普通函数</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> getSingle = <span class="function"><span class="keyword">function</span>(<span class="params">func</span>)</span>&#123;</span><br><span class="line">  <span class="keyword">var</span> result </span><br><span class="line">  <span class="keyword">return</span> <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">  	<span class="keyword">if</span>(!result)&#123;</span><br><span class="line">    	result = func.apply(<span class="keyword">this</span>, <span class="built_in">arguments</span>)</span><br><span class="line">  	&#125;</span><br><span class="line">  <span class="keyword">return</span> result</span><br><span class="line">  &#125;</span><br><span class="line">&#125; <span class="comment">//将普通函数转换成单例</span></span><br><span class="line"><span class="keyword">var</span> singleAlert  = getSingle(createAlert)</span><br><span class="line">oBtn.onclick = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> oDiv = singleAlert(<span class="string">'hello'</span>)</span><br><span class="line">  oDiv.style.display = <span class="string">'block'</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/blog/tags/设计模式/" rel="tag"># 设计模式</a>
+          
+            <a href="/blog/tags/笔记/" rel="tag"># 笔记</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/blog/2018/05/18/01/" rel="next" title="ES6学习笔记（一）">
+                <i class="fa fa-chevron-left"></i> ES6学习笔记（一）
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目錄
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            本站概覽
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/blog/images/0.jpg"
+                alt="Wild Teemo" />
+            
+              <p class="site-author-name" itemprop="name">Wild Teemo</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/blog/archives/">
+                
+                    <span class="site-state-item-count">2</span>
+                    <span class="site-state-item-name">文章</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/blog/categories/index.html">
+                    
+                    
+                      
+                    
+                    <span class="site-state-item-count">1</span>
+                    <span class="site-state-item-name">分類</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/blog/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">3</span>
+                    <span class="site-state-item-name">標籤</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/Wild-Teemo" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://weibo.com/u/3968196198" target="_blank" title="weibo"><i class="fa fa-fw fa-weibo"></i>weibo</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#设计模式"><span class="nav-number">1.</span> <span class="nav-text">设计模式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#模式类型"><span class="nav-number">1.1.</span> <span class="nav-text">模式类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#设计模式原则"><span class="nav-number">1.2.</span> <span class="nav-text">设计模式原则</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#单例模式"><span class="nav-number">1.3.</span> <span class="nav-text">单例模式</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Wild Teemo</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 強力驅動 v3.7.1</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主題 &mdash; <a class="theme-link" target="_blank" href="https://github.com/theme-next/hexo-theme-next">NexT.Mist</a> v6.3.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/blog/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/blog/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/blog/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/blog/js/src/utils.js?v=6.3.0"></script>
+
+  <script type="text/javascript" src="/blog/js/src/motion.js?v=6.3.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/blog/js/src/scrollspy.js?v=6.3.0"></script>
+<script type="text/javascript" src="/blog/js/src/post-details.js?v=6.3.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/blog/js/src/bootstrap.js?v=6.3.0"></script>
+
+
+
+  
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
