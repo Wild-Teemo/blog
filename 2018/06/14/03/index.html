@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-HK">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/blog/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/blog/css/main.css?v=6.3.0" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png?v=6.3.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png?v=6.3.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png?v=6.3.0">
+
+
+  <link rel="mask-icon" href="/blog/images/logo.svg?v=6.3.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/blog/',
+    scheme: 'Mist',
+    version: '6.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="学习代理模式、策略模式工厂模式、装饰者模式、观察者模式的笔记 代理模式为一个对象提供一种代理 以控制这个对象的访问如 表单提交向服务器发送请求 用代理控制前端对服务器的访问权限 按要求访问代理对象会增加一些功能，如校验合并等，也会去掉一些原有对象的功能 代理的分类虚拟代理将一些开销很大的对象 延迟到真正需要它的时候才去创建执行图片加载 文件上传 安全（保护）代理控制真实对象的访问权限登陆的前端校验">
+<meta name="keywords" content="设计模式,笔记">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JS设计模式（二）代理 策略 工厂 装饰者 观察者模式">
+<meta property="og:url" content="http://yoursite.com/blog/2018/06/14/03/index.html">
+<meta property="og:site_name" content="Teemo&#39;s blog">
+<meta property="og:description" content="学习代理模式、策略模式工厂模式、装饰者模式、观察者模式的笔记 代理模式为一个对象提供一种代理 以控制这个对象的访问如 表单提交向服务器发送请求 用代理控制前端对服务器的访问权限 按要求访问代理对象会增加一些功能，如校验合并等，也会去掉一些原有对象的功能 代理的分类虚拟代理将一些开销很大的对象 延迟到真正需要它的时候才去创建执行图片加载 文件上传 安全（保护）代理控制真实对象的访问权限登陆的前端校验">
+<meta property="og:locale" content="zh-HK">
+<meta property="og:updated_time" content="2018-06-14T14:09:16.395Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="JS设计模式（二）代理 策略 工厂 装饰者 观察者模式">
+<meta name="twitter:description" content="学习代理模式、策略模式工厂模式、装饰者模式、观察者模式的笔记 代理模式为一个对象提供一种代理 以控制这个对象的访问如 表单提交向服务器发送请求 用代理控制前端对服务器的访问权限 按要求访问代理对象会增加一些功能，如校验合并等，也会去掉一些原有对象的功能 代理的分类虚拟代理将一些开销很大的对象 延迟到真正需要它的时候才去创建执行图片加载 文件上传 安全（保护）代理控制真实对象的访问权限登陆的前端校验">
+
+
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/blog/2018/06/14/03/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>JS设计模式（二）代理 策略 工厂 装饰者 观察者模式 | Teemo's blog</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-HK">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+    <a href="https://github.com/Wild-Teemo/blog"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"></a>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/blog/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Teemo's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">Teemo's blog</p>
+      
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切換導航欄">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/blog/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首頁</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+    <a href="/blog/about/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-user"></i> <br />關於</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+    <a href="/blog/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />標籤</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+    <a href="/blog/categories/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-th"></i> <br />分類</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/blog/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />歸檔</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/blog/blog/2018/06/14/03/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Wild Teemo">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/blog/images/0.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Teemo's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">JS设计模式（二）代理 策略 工厂 装饰者 观察者模式
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">發表於</span>
+              
+
+              
+                
+              
+
+              <time title="創建時間：2018-06-14 22:07:53 / 修改時間：22:09:16" itemprop="dateCreated datePublished" datetime="2018-06-14T22:07:53+08:00">2018-06-14</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分類於</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/blog/categories/学习笔记/" itemprop="url" rel="index"><span itemprop="name">学习笔记</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>学习代理模式、策略模式工厂模式、装饰者模式、观察者模式的笔记</p>
+<h1 id="代理模式"><a href="#代理模式" class="headerlink" title="代理模式"></a>代理模式</h1><p>为一个对象提供一种代理 以控制这个对象的访问<br>如 表单提交向服务器发送请求 用代理控制前端对服务器的访问权限 按要求访问<br>代理对象会增加一些功能，如校验合并等，也会去掉一些原有对象的功能</p>
+<h2 id="代理的分类"><a href="#代理的分类" class="headerlink" title="代理的分类"></a>代理的分类</h2><h3 id="虚拟代理"><a href="#虚拟代理" class="headerlink" title="虚拟代理"></a>虚拟代理</h3><p>将一些开销很大的对象 延迟到真正需要它的时候才去创建执行<br>图片加载 文件上传</p>
+<h3 id="安全（保护）代理"><a href="#安全（保护）代理" class="headerlink" title="安全（保护）代理"></a>安全（保护）代理</h3><p>控制真实对象的访问权限<br>登陆的前端校验</p>
+<h3 id="远程代理"><a href="#远程代理" class="headerlink" title="远程代理"></a>远程代理</h3><p>一个对象将不同空间的对象进行局部代理<br>监控多个对象的状态 总机监控分店</p>
+<h3 id="智能代理"><a href="#智能代理" class="headerlink" title="智能代理"></a>智能代理</h3><p>调用对象代理处理如垃圾回收机制增加的额外服务<br>提供额外服务 火车站代售处</p>
+<h2 id="虚拟代理-1"><a href="#虚拟代理-1" class="headerlink" title="虚拟代理"></a>虚拟代理</h2><ul>
+<li>图片懒加载：加载完成前有一个占位图片，占位图片先在本地缓存，每一个位置都用本地缓存的占位图片，实际图片onload加载完后替换占位图片</li>
+<li>每个按钮返回一个请求发送给服务器，不能点一次请求一次，某个时间范围内判断不再点了，就将点击的所有请求一次性发送</li>
+<li>节流是将一个时间段内操作合并成一次，虚拟代理是把操作都攒起来一次性执行</li>
+</ul>
+<p>利用定时器 每一次点击操作延迟执行 把所有操作放入一个cache数组里 清除定时器<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html lang=<span class="string">"en"</span>&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">    &lt;meta charset=<span class="string">"UTF-8"</span>&gt;</span><br><span class="line">    &lt;meta name=<span class="string">"viewport"</span> content=<span class="string">"width=device-width, initial-scale=1.0"</span>&gt;</span><br><span class="line">    &lt;meta http-equiv=<span class="string">"X-UA-Compatible"</span> content=<span class="string">"ie=edge"</span>&gt;</span><br><span class="line">    &lt;title&gt;虚拟代理&lt;<span class="regexp">/title&gt;</span></span><br><span class="line"><span class="regexp">    &lt;style&gt;</span></span><br><span class="line"><span class="regexp">        #demo &#123;</span></span><br><span class="line"><span class="regexp">            border: 1px solid red</span></span><br><span class="line"><span class="regexp">        &#125;</span></span><br><span class="line"><span class="regexp">    &lt;/</span>style&gt;</span><br><span class="line">&lt;<span class="regexp">/head&gt;</span></span><br><span class="line"><span class="regexp">&lt;body&gt;</span></span><br><span class="line"><span class="regexp">    &lt;div id='demo'&gt;aa&lt;/</span>div&gt;</span><br><span class="line">    &lt;button type=<span class="string">"addWidth"</span>&gt;add width&lt;<span class="regexp">/button&gt;</span></span><br><span class="line"><span class="regexp">    &lt;button type="addBg"&gt;add bg&lt;/</span>button&gt;</span><br><span class="line">    &lt;button type=<span class="string">"addFs"</span>&gt;add Fs&lt;<span class="regexp">/button&gt;</span></span><br><span class="line"><span class="regexp">    &lt;button type="addFw"&gt;add Fw&lt;/</span>button&gt;</span><br><span class="line">    &lt;button type=<span class="string">"addC"</span>&gt;add color&lt;<span class="regexp">/button&gt;</span></span><br><span class="line"><span class="regexp">    &lt;script&gt;    </span></span><br><span class="line"><span class="regexp">        var oBtnArray = document.getElementsByTagName('button');</span></span><br><span class="line"><span class="regexp">        for (var i = 0; i &lt; oBtnArray.length; i++) &#123;</span></span><br><span class="line"><span class="regexp">            oBtnArray[i].onclick = function()&#123;</span></span><br><span class="line"><span class="regexp">                realDeal(this)</span></span><br><span class="line"><span class="regexp">            &#125;</span></span><br><span class="line"><span class="regexp">    &#125; </span></span><br><span class="line"><span class="regexp">        function deal(dom) &#123;</span></span><br><span class="line"><span class="regexp">            console.log(this)</span></span><br><span class="line"><span class="regexp">            switch (dom.getAttribute('type')) &#123;</span></span><br><span class="line"><span class="regexp">                case 'addWidth':</span></span><br><span class="line"><span class="regexp">                    demo.style.width = demo.offsetWidth + 50 + 'px';</span></span><br><span class="line"><span class="regexp">                    break;</span></span><br><span class="line"><span class="regexp">                case 'addBg':</span></span><br><span class="line"><span class="regexp">                    demo.style.backgroundColor = 'orange';</span></span><br><span class="line"><span class="regexp">                    break;</span></span><br><span class="line"><span class="regexp">                case 'addFs':</span></span><br><span class="line"><span class="regexp">                    demo.style.fontSize = '25px';</span></span><br><span class="line"><span class="regexp">                    break;</span></span><br><span class="line"><span class="regexp">                case 'addFw':</span></span><br><span class="line"><span class="regexp">                    demo.style.fontWeight = 'bold';</span></span><br><span class="line"><span class="regexp">                    break;</span></span><br><span class="line"><span class="regexp">                case 'addC':</span></span><br><span class="line"><span class="regexp">                    demo.style.color = 'red';</span></span><br><span class="line"><span class="regexp">                    break;</span></span><br><span class="line"><span class="regexp">                default:</span></span><br><span class="line"><span class="regexp">                    break;</span></span><br><span class="line"><span class="regexp">            &#125;</span></span><br><span class="line"><span class="regexp">        &#125;</span></span><br><span class="line"><span class="regexp">        var ProxyRequest = function(func)&#123;</span></span><br><span class="line"><span class="regexp">            var cache = []</span></span><br><span class="line"><span class="regexp">            var timer = null</span></span><br><span class="line"><span class="regexp">            return function()&#123; /</span><span class="regexp">/点击几次 执行几次 arg[0]为点击的dom</span></span><br><span class="line"><span class="regexp">                /</span><span class="regexp">/arguments type</span></span><br><span class="line"><span class="regexp">                cache.push(arguments[0]);</span></span><br><span class="line"><span class="regexp">                /</span><span class="regexp">/ var arg = arguments</span></span><br><span class="line"><span class="regexp">                clearTimeout(timer);</span></span><br><span class="line"><span class="regexp">                timer = setTimeout(function()&#123;</span></span><br><span class="line"><span class="regexp">                    /</span><span class="regexp">/this window         </span></span><br><span class="line"><span class="regexp">                    /</span><span class="regexp">/ for(var i =0;i&lt;cache.length;i++)&#123;</span></span><br><span class="line"><span class="regexp">                        /</span><span class="regexp">/arg[0]表示最后一个点击的dom 相当于用最后一个dom去执行func函数 传人参数是每一个点击过的dom</span></span><br><span class="line"><span class="regexp">                        /</span><span class="regexp">/ func.call(arg[0],cache[i])</span></span><br><span class="line"><span class="regexp">                        /</span><span class="regexp">/ func.call(cache[i],cache[i])</span></span><br><span class="line"><span class="regexp">                        /</span><span class="regexp">/用cache[i] 下次再点击的时候cache里还保存着上次点击的</span></span><br><span class="line"><span class="regexp">                        func.call(cache.shift(),cache.shift())</span></span><br><span class="line"><span class="regexp">                        console.log(cache) /</span><span class="regexp">/每次cache都为空</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">                    /</span><span class="regexp">/ &#125;</span></span><br><span class="line"><span class="regexp">                &#125;,2000)</span></span><br><span class="line"><span class="regexp">            &#125;</span></span><br><span class="line"><span class="regexp">        &#125;</span></span><br><span class="line"><span class="regexp">        var realDeal = ProxyRequest(deal)</span></span><br><span class="line"><span class="regexp">    &lt;/</span>script&gt;</span><br><span class="line">&lt;<span class="regexp">/body&gt;</span></span><br><span class="line"><span class="regexp">&lt;/</span>html&gt;</span><br><span class="line"><span class="string">``</span><span class="string">` </span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">## 安全代理</span></span><br><span class="line"><span class="string">以前写一些表单验证都是用多个if语句逐个判断，函数也缺乏弹性，如果更改了其中一条规则，需要深入代码找到，绑定函数的内部实现也违反了开放封闭原则，复用性差，需要大量结构类似的代码。</span></span><br><span class="line"><span class="string">使用安全代理完成表单验证，校验需要策略模式配合</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"># 策略模式</span></span><br><span class="line"><span class="string">策略模式是对一系列算法的定义，将每一个算法封装起来，使他们还可以相互转换</span></span><br><span class="line"><span class="string">让算法独立于它的客户而独立变化</span></span><br><span class="line"><span class="string">用策略模式避免多条判断语句 实现继承 功能的拓展</span></span><br><span class="line"><span class="string">用一个类对象实例管理规则的校验 该对象可以添加校验方法</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">`</span><span class="string">``</span>javascript</span><br><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html lang=<span class="string">"en"</span>&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">    &lt;meta charset=<span class="string">"UTF-8"</span>&gt;</span><br><span class="line">    &lt;meta name=<span class="string">"viewport"</span> content=<span class="string">"width=device-width, initial-scale=1.0"</span>&gt;</span><br><span class="line">    &lt;meta http-equiv=<span class="string">"X-UA-Compatible"</span> content=<span class="string">"ie=edge"</span>&gt;</span><br><span class="line">    &lt;title&gt;Document&lt;<span class="regexp">/title&gt;</span></span><br><span class="line"><span class="regexp">&lt;/</span>head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">    &lt;div&gt;</span><br><span class="line">        用户名:</span><br><span class="line">        &lt;input type=<span class="string">"text"</span> id=<span class="string">'userDom'</span> name=<span class="string">'username'</span>&gt;</span><br><span class="line">        &lt;span id=<span class="string">'showUser'</span>&gt;&lt;/span&gt;</span><br><span class="line">        &lt;br&gt; 密码:</span><br><span class="line">        &lt;input type=<span class="string">"password"</span> id=<span class="string">'psDom'</span> name=<span class="string">'password'</span>&gt;</span><br><span class="line">        &lt;span id=<span class="string">'showPs'</span>&gt;&lt;/span&gt;</span><br><span class="line">        &lt;br&gt; 邮箱:</span><br><span class="line">        &lt;input type=<span class="string">"text"</span> id=<span class="string">'emDom'</span> name=<span class="string">'password'</span>&gt;</span><br><span class="line">        &lt;span id=<span class="string">'showEm'</span>&gt;&lt;/span&gt;</span><br><span class="line">        &lt;br&gt;</span><br><span class="line">        &lt;button id=<span class="string">'loginDom'</span>&gt;login&lt;<span class="regexp">/button&gt;</span></span><br><span class="line"><span class="regexp">    &lt;/</span>div&gt;</span><br><span class="line">    &lt;script src=<span class="string">'./strategy.js'</span>&gt;&lt;/script&gt;</span><br><span class="line">    &lt;script&gt;</span><br><span class="line">        <span class="comment">// 用户名不能为空 长度不能超过5   密码不能为空 密码长度不能少于6</span></span><br><span class="line">        <span class="function"><span class="keyword">function</span> <span class="title">deal</span>(<span class="params"></span>) </span>&#123; &#125;;</span><br><span class="line">        loginDom.onclick = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">            ProxyRequest(&#123; <span class="attr">username</span>: userDom.value, <span class="attr">password</span>: psDom.value &#125;, <span class="string">'xxx'</span>, <span class="string">'POST'</span>, deal)</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// function Requset (data, url, method, cb) &#123;</span></span><br><span class="line">        <span class="comment">// $.ajax(&#123;</span></span><br><span class="line">        <span class="comment">// url: url,</span></span><br><span class="line">        <span class="comment">// data: data,</span></span><br><span class="line">        <span class="comment">//method: method,</span></span><br><span class="line">        <span class="comment">// success: function (data) &#123;</span></span><br><span class="line">        <span class="comment">// cb(data);</span></span><br><span class="line">        <span class="comment">// &#125;</span></span><br><span class="line">        <span class="comment">// &#125;)</span></span><br><span class="line">        <span class="comment">//&#125; </span></span><br><span class="line">        <span class="keyword">var</span> validator = <span class="keyword">new</span> Validator();</span><br><span class="line">        Validator.extend(&#123;            </span><br><span class="line">                type: <span class="string">'isEmail'</span>, <span class="attr">handle</span>: <span class="function"><span class="keyword">function</span> (<span class="params">value, errMsg</span>) </span>&#123;</span><br><span class="line">                <span class="keyword">if</span> (value !== <span class="string">''</span> &amp;&amp; value.indexOf(<span class="string">'@'</span>) == <span class="number">-1</span>) &#123;</span><br><span class="line">                    <span class="keyword">return</span> errMsg;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">        <span class="keyword">var</span> ProxyRequest = (<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">            validator.add(userDom, showUser,</span><br><span class="line">                [</span><br><span class="line">                    &#123; <span class="attr">strategy</span>: <span class="string">'isNotEmpty'</span>, <span class="attr">errMsg</span>: <span class="string">'用户名不能为空'</span> &#125;,</span><br><span class="line">                    &#123; <span class="attr">strategy</span>: <span class="string">'maxLength:5'</span>, <span class="attr">errMsg</span>: <span class="string">'用户名不能超过5'</span> &#125;</span><br><span class="line">                ]</span><br><span class="line">            );</span><br><span class="line">            validator.add(psDom, showPs,</span><br><span class="line">                [</span><br><span class="line">                    &#123; <span class="attr">strategy</span>: <span class="string">'isNotEmpty'</span>, <span class="attr">errMsg</span>: <span class="string">'密码不能为空'</span> &#125;,</span><br><span class="line">                    &#123; <span class="attr">strategy</span>: <span class="string">'minLength:6'</span>, <span class="attr">errMsg</span>: <span class="string">'密码长度不能小于6'</span> &#125;</span><br><span class="line">                ]</span><br><span class="line">            );</span><br><span class="line">            validator.add(emDom, showEm,</span><br><span class="line">                [</span><br><span class="line">                    &#123; <span class="attr">strategy</span>: <span class="string">'isNotEmpty'</span>, <span class="attr">errMsg</span>: <span class="string">'邮箱不能为空'</span> &#125;,</span><br><span class="line">                    &#123; <span class="attr">strategy</span>: <span class="string">'isEmail'</span>, <span class="attr">errMsg</span>: <span class="string">'这不是个邮箱'</span> &#125;</span><br><span class="line">                ]</span><br><span class="line">            );</span><br><span class="line">            <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">                <span class="keyword">var</span> arg = <span class="built_in">arguments</span>;</span><br><span class="line">                <span class="keyword">var</span> flag = validator.start();</span><br><span class="line">                <span class="comment">//    if (flag) &#123;</span></span><br><span class="line">                <span class="comment">//        Request.apply(this, arg)</span></span><br><span class="line">                <span class="comment">//    &#125;</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;)();</span><br><span class="line">    &lt;<span class="regexp">/script&gt;</span></span><br><span class="line"><span class="regexp">&lt;/</span>body&gt;</span><br><span class="line">&lt;<span class="regexp">/html&gt;</span></span><br></pre></td></tr></table></figure></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 策略模式</span></span><br><span class="line">Validator.prototype.start = <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="keyword">var</span> flag = <span class="literal">true</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">var</span> i = <span class="number">0</span>;i&lt;<span class="keyword">this</span>.cache.length;i++)&#123;</span><br><span class="line">        <span class="keyword">if</span>(<span class="keyword">this</span>.cache[i]() !== <span class="literal">true</span>)&#123;</span><br><span class="line">            flag = <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> flag;</span><br><span class="line">&#125;</span><br><span class="line">Validator.prototype.stratege = &#123;</span><br><span class="line">    isNotEmpty:<span class="function"><span class="keyword">function</span>(<span class="params">value,errMsg</span>)</span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(value == <span class="string">''</span>)&#123;</span><br><span class="line">            <span class="keyword">return</span> errMsg</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span></span><br><span class="line">    &#125;,</span><br><span class="line">    maxLength:<span class="function"><span class="keyword">function</span>(<span class="params">value,len,errMsg</span>)</span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(value.length&gt;len)&#123;</span><br><span class="line">            <span class="keyword">return</span> errMsg</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span></span><br><span class="line">    &#125;,</span><br><span class="line">    minLength:<span class="function"><span class="keyword">function</span>(<span class="params">value,len,errMsg</span>)</span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(value!==<span class="string">''</span> &amp;&amp; value.length&lt;len)&#123;</span><br><span class="line">            <span class="keyword">return</span> errMsg</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">Validator.prototype.add = <span class="function"><span class="keyword">function</span>(<span class="params">dom,showDom,strategeArr</span>)</span>&#123;</span><br><span class="line">   <span class="comment">//this vaildator</span></span><br><span class="line">    strategeArr.forEach(<span class="function"><span class="keyword">function</span>(<span class="params">ele,index</span>)</span>&#123;</span><br><span class="line">        <span class="comment">// console.log(ele) //&#123; strategy: 'isNotEmpty', errMsg: '用户名不能为空' &#125;strategy:'minLength:6', errMsg: '长度不能少于6' </span></span><br><span class="line">        <span class="keyword">var</span> self = <span class="keyword">this</span> <span class="comment">//vaildator</span></span><br><span class="line">        <span class="comment">// console.log(this)</span></span><br><span class="line">        <span class="keyword">this</span>.cache.push(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">            <span class="comment">// console.log(this) // this.cache</span></span><br><span class="line">            <span class="keyword">var</span> arr = ele.strategy.split(<span class="string">':'</span>);<span class="comment">//[isNotEmpty] [minLength,6]</span></span><br><span class="line">            <span class="keyword">var</span> type = arr.shift();<span class="comment">//[] [6]</span></span><br><span class="line">            arr.unshift(dom.value)<span class="comment">//[dom.value] [dom.value,6]</span></span><br><span class="line">            arr.push(ele.errMsg)<span class="comment">//[dom.value,errMsg] [dom.value,6,errMsg]</span></span><br><span class="line">            <span class="keyword">var</span> msg = self.stratege[type].apply(<span class="keyword">this</span>,arr)</span><br><span class="line">            <span class="keyword">if</span>(msg != <span class="literal">true</span>)&#123;</span><br><span class="line">                showDom.innerText = msg</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> msg;</span><br><span class="line">            <span class="comment">// console.log(msg)</span></span><br><span class="line">        &#125;)</span><br><span class="line">        </span><br><span class="line">    &#125;,<span class="keyword">this</span>)</span><br><span class="line">&#125;</span><br><span class="line">Validator.extend = <span class="function"><span class="keyword">function</span> (<span class="params">config</span>) </span>&#123;</span><br><span class="line">    Validator.prototype.stratege[config.type] = config.handle;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Validator</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.cache = [] <span class="comment">//用cache缓存策略</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> validator = <span class="keyword">new</span> Validator();</span><br></pre></td></tr></table></figure>
+<h1 id="工厂模式"><a href="#工厂模式" class="headerlink" title="工厂模式"></a>工厂模式</h1><p>定义创建对象的接口 让子类去真正的实例化.工厂方法将类的实例化延迟到子类。</p>
+<p>var创建对象,创建不同实例需要大量重复代码<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">smallerPlane</span><br><span class="line"><span class="keyword">var</span> oSmallPlane = &#123;</span><br><span class="line">	width:<span class="number">100</span>,</span><br><span class="line">	height:<span class="number">100</span>,</span><br><span class="line">	blood:<span class="number">100</span>,</span><br><span class="line">	touch:<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">		<span class="built_in">console</span>.log(<span class="number">1</span>)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>构造函数创建,不同的构造函数无法进行统一的管理，需要分别添加属性方法<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">SmallPlane</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">	<span class="keyword">this</span>.width = <span class="number">200</span>;</span><br><span class="line">	<span class="keyword">this</span>.touch = <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">SmartPlane</span>(<span class="params"></span>)</span>&#123;&#125;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">AttackPlane</span>(<span class="params"></span>)</span>&#123;&#125;</span><br><span class="line"><span class="keyword">var</span> smallPlane = <span class="keyword">new</span> SmallPlane();</span><br></pre></td></tr></table></figure></p>
+<h2 id="简单工厂模式"><a href="#简单工厂模式" class="headerlink" title="简单工厂模式"></a>简单工厂模式</h2><ul>
+<li>集中所有对象的创建 便于统一管理</li>
+<li>工厂仅负责实例化哪些对象，而不负责具体的子类 符合单一原则</li>
+<li>便于扩展 添加子类和方法只需要在工厂里添加</li>
+<li>违背开闭原则（可扩展 不可修改）添加子类和方法都需要在工厂里修改<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//简单工厂模式 统一管理多个构造函数</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">PlaneFactory</span>(<span class="params">type</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> oPlane = <span class="literal">null</span>;</span><br><span class="line">    <span class="keyword">switch</span> (type) &#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="string">'SmallPlane'</span>:</span><br><span class="line">            oPlane = <span class="keyword">new</span> SmallPlane();</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="string">'SmartPlane'</span>:</span><br><span class="line">            oPlane = <span class="keyword">new</span> SmartPlane();</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="string">'AttackPlane'</span>:</span><br><span class="line">            oPlane = <span class="keyword">new</span> AttackPlane();</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    oPlane.touch = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="number">1</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> oPlane;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">SmallPlane</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.width = <span class="number">200</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">SmartPlane</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.width = <span class="number">200</span>;</span><br><span class="line">    <span class="keyword">this</span>.smart = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="number">2</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">AttackPlane</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.width = <span class="number">200</span>;</span><br><span class="line">    <span class="keyword">this</span>.attack = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//但是违背了开闭原则</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="工厂方法模式"><a href="#工厂方法模式" class="headerlink" title="工厂方法模式"></a>工厂方法模式</h2><p>不用唯一的工厂类创建，不同产品对应不同的工厂子类<br>添加新的产品 就是添加新的工厂 而不用修改其他工厂</p>
+<ul>
+<li>抽象工厂类 负责定义创建产品的公共接口 公共方法</li>
+<li>产品子工厂 继承抽象工厂类 实现抽象工厂类的接口</li>
+<li>每一个产品各自的产品类</li>
+</ul>
+<p>添加子类和方法不用修改工厂 工厂只是一个接口 直接在工厂原型上添加就可以</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">PlaneFactory</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">PlaneFactory.prototype.touch = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="number">1</span>)</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//所有子类都定义在原型上</span></span><br><span class="line">PlaneFactory.prototype.SmallPlane = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.width = <span class="number">100</span>;</span><br><span class="line">    <span class="keyword">this</span>.height = <span class="number">200</span>;</span><br><span class="line">&#125;</span><br><span class="line">PlaneFactory.prototype.SmartPlane = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.width = <span class="number">100</span>;</span><br><span class="line">    <span class="keyword">this</span>.smart = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="number">2</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">PlaneFactory.create = <span class="function"><span class="keyword">function</span> (<span class="params">type</span>) </span>&#123;</span><br><span class="line">    <span class="comment">//根据类型找到子工厂，还要判断子工厂是否和工厂具备继承的关系，具备就直接创建，不具备就形成继承关系</span></span><br><span class="line">    <span class="comment">//找不到抛出错误</span></span><br><span class="line">    <span class="keyword">if</span> (!PlaneFactory.prototype[type]) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="string">'no this constructor'</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (PlaneFactory.prototype[type].prototype._proto_ !== PlaneFactory.prototype) &#123;</span><br><span class="line">        <span class="comment">//或者写为 new PlaneFactory.prototype[type]().touch == PlaneFactory.prototype.touch</span></span><br><span class="line">        <span class="comment">//这样PlaneFactory.prototype[type].prototype 就是 PlaneFactory &#123; &#125;</span></span><br><span class="line">        PlaneFactory.prototype[type].prototype = <span class="keyword">new</span> PlaneFactory();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">var</span> plane = <span class="keyword">new</span> PlaneFactory.prototype[type];</span><br><span class="line">    <span class="keyword">return</span> plane;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> smallpalne = PlaneFactory.create(<span class="string">'SmallPlane'</span>)</span><br><span class="line"><span class="comment">//添加子类只需要在原型上添加方法 </span></span><br><span class="line">PlaneFactory.prototype.AttackPlane = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.width = <span class="number">100</span>;</span><br><span class="line">    <span class="keyword">this</span>.attack = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="number">3</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> attackplane = PlaneFactory.create(<span class="string">'AttackPlane'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">//添加公共方法 每个创建出的实例对象都可以调用这个方法</span></span><br><span class="line">PlaneFactory.prototype.fly = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'fly'</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="装饰者模式"><a href="#装饰者模式" class="headerlink" title="装饰者模式"></a>装饰者模式</h1><p>在不改变元对象的基础上 通过对其包装拓展添加属性方法<br>可以在程序运行期间 给对象动态的添加职责 比继承更加灵活轻便<br>继承的不灵活：改变功能需要新的子类去继承 子类之间的关系也比较复杂<br>构造函数需要一个装饰资源池，提供相应的装饰方法，提供添加装饰方法的方法</p>
+<p>用装饰者模式装饰上一个工厂模式<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//在工厂模式上添加装饰模式</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">PlaneFactory</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="comment">//存储装饰方法的名称</span></span><br><span class="line">    <span class="keyword">this</span>.decorators_list = []</span><br><span class="line">&#125;</span><br><span class="line">PlaneFactory.prototype.decorators = &#123;</span><br><span class="line">    eat: <span class="function"><span class="keyword">function</span> (<span class="params">oP</span>) </span>&#123;</span><br><span class="line">        oP.blood += <span class="number">100</span>;</span><br><span class="line"></span><br><span class="line">    &#125;,</span><br><span class="line">    die: <span class="function"><span class="keyword">function</span> (<span class="params">oP</span>) </span>&#123;</span><br><span class="line">        oP.blood -= <span class="number">100</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125; <span class="comment">//装饰方法</span></span><br><span class="line"></span><br><span class="line">PlaneFactory.prototype.decorate = <span class="function"><span class="keyword">function</span> (<span class="params">decorator</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.decorators_list.push(decorator)</span><br><span class="line">&#125; <span class="comment">//把需要装饰的方法存入装饰池中</span></span><br><span class="line"></span><br><span class="line">PlaneFactory.prototype.done = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; <span class="keyword">this</span>.decorators_list.length; i++) &#123;</span><br><span class="line">        <span class="keyword">this</span>.decorators[<span class="keyword">this</span>.decorators_list[i]] &amp;&amp; <span class="keyword">this</span>.decorators[<span class="keyword">this</span>.decorators_list[i]](<span class="keyword">this</span>) <span class="comment">//先确定有这个装饰方法</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125; <span class="comment">//把装饰池中的方法添加到对象上</span></span><br><span class="line"></span><br><span class="line">PlaneFactory.prototype.empty = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.decorators_list = []</span><br><span class="line">&#125; <span class="comment">//清空装饰方法 也可以写在done的里面 每次添加完就清空</span></span><br><span class="line"></span><br><span class="line">PlaneFactory.prototype.blood = <span class="number">100</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">PlaneFactory.prototype.SmallPlane = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.width = <span class="number">100</span>;</span><br><span class="line">    <span class="keyword">this</span>.height = <span class="number">200</span>;</span><br><span class="line">&#125;</span><br><span class="line">PlaneFactory.prototype.SmartPlane = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.width = <span class="number">100</span>;</span><br><span class="line">    <span class="keyword">this</span>.smart = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="number">2</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">PlaneFactory.create = <span class="function"><span class="keyword">function</span> (<span class="params">type</span>) </span>&#123;</span><br><span class="line">    <span class="comment">//根据类型找到子工厂，还要判断子工厂是否和工厂具备继承的关系，具备就直接创建，不具备就形成继承关系</span></span><br><span class="line">    <span class="comment">//找不到抛出错误</span></span><br><span class="line">    <span class="keyword">if</span> (!PlaneFactory.prototype[type]) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="string">'no this constructor'</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (PlaneFactory.prototype[type].prototype._proto_ !== PlaneFactory.prototype) &#123;</span><br><span class="line">        <span class="comment">//或者写为 new PlaneFactory.prototype[type]().touch == PlaneFactory.prototype.touch</span></span><br><span class="line">        <span class="comment">//这样PlaneFactory.prototype[type].prototype 就是 PlaneFactory &#123; &#125;</span></span><br><span class="line">        PlaneFactory.prototype[type].prototype = <span class="keyword">new</span> PlaneFactory();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">var</span> plane = <span class="keyword">new</span> PlaneFactory.prototype[type];</span><br><span class="line">    <span class="keyword">return</span> plane;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> smallplane = PlaneFactory.create(<span class="string">'SmallPlane'</span>)</span><br><span class="line">smallplane.decorate(<span class="string">'eat'</span>)</span><br><span class="line">smallplane.done();</span><br><span class="line"><span class="built_in">console</span>.log(smallplane.blood)</span><br><span class="line">smallplane.empty();</span><br><span class="line">smallplane.decorate(<span class="string">'die'</span>)</span><br><span class="line">smallplane.done()</span><br><span class="line"><span class="built_in">console</span>.log(smallplane.blood)</span><br></pre></td></tr></table></figure></p>
+<h1 id="观察者模式"><a href="#观察者模式" class="headerlink" title="观察者模式"></a>观察者模式</h1><p>也叫做发布订阅模式<br>定义对象间一种一对多的依赖关系 当一个对象状态改变，所有依赖于它的对象都将得到通知。<br>DOM节点上绑定事件函数 addEventListener 同一个事件绑定了多个处理函数 事件触发函数会依次执行 就是一种观察者模式<br>JQ的On方法 用trigger绑定自定义事件<br>用于解耦 避免过多耦合 无需过多依赖 只需要状态改变时将消息传递 依赖的随之改变</p>
+<p>用观察者模式模拟事件绑定函数<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html lang=<span class="string">"en"</span>&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">    &lt;meta charset=<span class="string">"UTF-8"</span>&gt;</span><br><span class="line">    &lt;meta name=<span class="string">"viewport"</span> content=<span class="string">"width=device-width, initial-scale=1.0"</span>&gt;</span><br><span class="line">    &lt;meta http-equiv=<span class="string">"X-UA-Compatible"</span> content=<span class="string">"ie=edge"</span>&gt;</span><br><span class="line">    &lt;title&gt;观察者模式&lt;<span class="regexp">/title&gt;</span></span><br><span class="line"><span class="regexp">&lt;/</span>head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">    &lt;script&gt;</span><br><span class="line">        <span class="function"><span class="keyword">function</span> <span class="title">Event</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">            <span class="keyword">this</span>.cache = &#123;&#125;</span><br><span class="line">        &#125;</span><br><span class="line">        Event.prototype.on = <span class="function"><span class="keyword">function</span> (<span class="params">type, handle</span>) </span>&#123;</span><br><span class="line">            <span class="keyword">if</span> (!<span class="keyword">this</span>.cache[type]) &#123;</span><br><span class="line">                <span class="keyword">this</span>.cache[type] = [handle]</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">this</span>.cache[type].push(handle)</span><br><span class="line">            &#125; <span class="comment">//绑定事件</span></span><br><span class="line">        &#125;</span><br><span class="line">        Event.prototype.emmit = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">            <span class="keyword">var</span> type = <span class="built_in">arguments</span>[<span class="number">0</span>]</span><br><span class="line">            <span class="keyword">var</span> arg = [].slice.call(<span class="built_in">arguments</span>, <span class="number">1</span>)</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; <span class="keyword">this</span>.cache[type].length; i++) &#123;</span><br><span class="line">                <span class="keyword">this</span>.cache[type][i].apply(<span class="keyword">this</span>, arg)</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="comment">//触发事件</span></span><br><span class="line"></span><br><span class="line">        Event.prototype.empty = <span class="function"><span class="keyword">function</span> (<span class="params">type, handle</span>) </span>&#123;</span><br><span class="line">            <span class="keyword">this</span>.cache[type] = <span class="keyword">this</span>.cache[type].filter(<span class="function"><span class="keyword">function</span> (<span class="params">ele, index</span>) </span>&#123;</span><br><span class="line">                <span class="keyword">return</span> ele != handle <span class="comment">//ele不等于handle的留下来 filter不改变改变原数组</span></span><br><span class="line">            &#125;)</span><br><span class="line">        &#125; <span class="comment">//清除事件</span></span><br><span class="line">        Event.prototype.once = <span class="function"><span class="keyword">function</span> (<span class="params">type,handle,time</span>) </span>&#123;</span><br><span class="line">            <span class="keyword">var</span> arg = [].slice.call(<span class="built_in">arguments</span>, <span class="number">2</span>) </span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; <span class="keyword">this</span>.cache[type].length; i++) &#123;</span><br><span class="line">                <span class="keyword">if</span> (<span class="keyword">this</span>.cache[type][i] == handle) &#123;</span><br><span class="line">                    <span class="keyword">this</span>.cache[type][i].apply(<span class="keyword">this</span>, arg)</span><br><span class="line">                &#125;</span><br><span class="line">                 <span class="keyword">this</span>.cache[type] = <span class="keyword">this</span>.cache[type].filter(<span class="function"><span class="keyword">function</span> (<span class="params">ele, index</span>) </span>&#123;</span><br><span class="line">                    <span class="keyword">return</span> ele != handle <span class="comment">//从数组里清除handle函数 this.empty(tyle,handle)</span></span><br><span class="line">                &#125;)</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="comment">//手写once 只执行一次 绑定了once的执行过从数组中清除掉</span></span><br><span class="line">        <span class="keyword">var</span> oE = <span class="keyword">new</span> Event();</span><br><span class="line">        <span class="function"><span class="keyword">function</span> <span class="title">deal1</span>(<span class="params">time</span>) </span>&#123;</span><br><span class="line">            <span class="built_in">console</span>.log(<span class="string">'die'</span>, time)</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="function"><span class="keyword">function</span> <span class="title">deal2</span>(<span class="params">time</span>) </span>&#123;</span><br><span class="line">            <span class="built_in">console</span>.log(<span class="string">'over'</span>, time)</span><br><span class="line">        &#125;</span><br><span class="line">        oE.on(<span class="string">'die'</span>, deal1)</span><br><span class="line">        oE.on(<span class="string">'die'</span>, deal2)</span><br><span class="line">        <span class="comment">// oE.emmit('die', '22:06')</span></span><br><span class="line">        <span class="comment">// oE.empty('die',deal1)</span></span><br><span class="line">        <span class="comment">// oE.emmit('die', '22:06')</span></span><br><span class="line">        oE.once(<span class="string">'die'</span>,deal1,<span class="string">'22:06'</span>)</span><br><span class="line">         oE.once(<span class="string">'die'</span>, deal1, <span class="string">'22:06'</span>)</span><br><span class="line">         oE.once(<span class="string">'die'</span>, deal1, <span class="string">'22:06'</span>)</span><br><span class="line">         oE.once(<span class="string">'die'</span>, deal1, <span class="string">'22:06'</span>)</span><br><span class="line">         oE.once(<span class="string">'die'</span>, deal2, <span class="string">'22:06'</span>)</span><br><span class="line">    &lt;<span class="regexp">/script&gt;</span></span><br><span class="line"><span class="regexp">&lt;/</span>body&gt;</span><br><span class="line">&lt;<span class="regexp">/html&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>可以在工厂模式中继承写好的事件绑定对象<br>PlaneFactory.prototype = oE;<br>就可以直接用实例smallplane调用oE的方法，如smallplane.on(‘die’,function(){console.log(1)}) smallplane.emmit(‘die’)</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/blog/tags/设计模式/" rel="tag"># 设计模式</a>
+          
+            <a href="/blog/tags/笔记/" rel="tag"># 笔记</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/blog/2018/05/18/02/" rel="next" title="JS设计模式（一）单例模式">
+                <i class="fa fa-chevron-left"></i> JS设计模式（一）单例模式
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目錄
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            本站概覽
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/blog/images/0.jpg"
+                alt="Wild Teemo" />
+            
+              <p class="site-author-name" itemprop="name">Wild Teemo</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/blog/archives/">
+                
+                    <span class="site-state-item-count">3</span>
+                    <span class="site-state-item-name">文章</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/blog/categories/index.html">
+                    
+                    
+                      
+                    
+                    <span class="site-state-item-count">1</span>
+                    <span class="site-state-item-name">分類</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/blog/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">3</span>
+                    <span class="site-state-item-name">標籤</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/Wild-Teemo" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://weibo.com/u/3968196198" target="_blank" title="weibo"><i class="fa fa-fw fa-weibo"></i>weibo</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#代理模式"><span class="nav-number">1.</span> <span class="nav-text">代理模式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#代理的分类"><span class="nav-number">1.1.</span> <span class="nav-text">代理的分类</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#虚拟代理"><span class="nav-number">1.1.1.</span> <span class="nav-text">虚拟代理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安全（保护）代理"><span class="nav-number">1.1.2.</span> <span class="nav-text">安全（保护）代理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#远程代理"><span class="nav-number">1.1.3.</span> <span class="nav-text">远程代理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#智能代理"><span class="nav-number">1.1.4.</span> <span class="nav-text">智能代理</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#虚拟代理-1"><span class="nav-number">1.2.</span> <span class="nav-text">虚拟代理</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#工厂模式"><span class="nav-number">2.</span> <span class="nav-text">工厂模式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#简单工厂模式"><span class="nav-number">2.1.</span> <span class="nav-text">简单工厂模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#工厂方法模式"><span class="nav-number">2.2.</span> <span class="nav-text">工厂方法模式</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#装饰者模式"><span class="nav-number">3.</span> <span class="nav-text">装饰者模式</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#观察者模式"><span class="nav-number">4.</span> <span class="nav-text">观察者模式</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Wild Teemo</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 強力驅動 v3.7.1</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主題 &mdash; <a class="theme-link" target="_blank" href="https://github.com/theme-next/hexo-theme-next">NexT.Mist</a> v6.3.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/blog/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/blog/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/blog/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/blog/js/src/utils.js?v=6.3.0"></script>
+
+  <script type="text/javascript" src="/blog/js/src/motion.js?v=6.3.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/blog/js/src/scrollspy.js?v=6.3.0"></script>
+<script type="text/javascript" src="/blog/js/src/post-details.js?v=6.3.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/blog/js/src/bootstrap.js?v=6.3.0"></script>
+
+
+
+  
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
